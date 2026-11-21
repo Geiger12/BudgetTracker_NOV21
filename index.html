@@ -320,7 +320,7 @@ section.group, #schedule:not(:empty), #planned:not(:empty), #where:not(:empty), 
 /* ===== Overview: a swipeable stack of gauge cards ===== */
 .deck { position:relative; flex:1 1 auto; min-height:240px; overflow-x:clip; height:min(58vh, 440px); margin:var(--s2) calc(var(--s4) * -1) 0; touch-action:pan-y; -webkit-user-select:none; user-select:none; outline:none; }
 .deck:empty { display:none; }
-.dcard { position:absolute; top:6px; bottom:16px; left:50%; width:min(78%, 340px); margin-left:calc(min(78%, 340px) / -2); display:flex; flex-direction:column; padding:var(--s4); border-radius:var(--r-xl); overflow:hidden; box-shadow:var(--shadow-deck); transform-origin:50% 90%; transition:transform .42s cubic-bezier(.2,.8,.2,1); will-change:transform; cursor:grab; container-type:size; }
+.dcard { --cw:clamp(260px, 91%, 720px); position:absolute; top:6px; bottom:16px; left:50%; width:var(--cw); margin-left:calc(var(--cw) / -2); display:flex; flex-direction:column; padding:var(--s4); border-radius:var(--r-xl); overflow:hidden; box-shadow:var(--shadow-deck); transform-origin:50% 90%; transition:transform .42s cubic-bezier(.2,.8,.2,1); will-change:transform; cursor:grab; container-type:size; }
 .dcard::after { content:""; position:absolute; inset:0; border-radius:inherit; background:#0b0c0e; opacity:var(--dim, 0); pointer-events:none; transition:opacity .42s ease; }
 .deck.dragging .dcard, .deck.dragging .dcard::after { transition:none; }
 .deck.dragging .dcard { cursor:grabbing; }
@@ -330,7 +330,7 @@ section.group, #schedule:not(:empty), #planned:not(:empty), #where:not(:empty), 
 .dpill .dot { width:9px; height:9px; }
 .dcount { font-size:var(--fs-xs); font-weight:650; color:#fff; padding:7px 11px; border-radius:var(--r-pill); background:rgba(10,11,13,.55); }
 .dring { position:relative; flex:1 1 auto; min-height:0; margin:var(--s2) 0; }
-.dring svg { position:absolute; inset:0; margin:auto; width:100%; height:100%; max-height:176px; overflow:visible; }
+.dring svg { position:absolute; inset:0; margin:auto; width:100%; height:100%; max-height:min(240px, 100%); overflow:visible; }
 .dring .hole { fill:rgba(10,11,13,.5); }
 .dring .dbig { font-size:27px; font-weight:800; fill:#fff; letter-spacing:-0.02em; }
 .dring .dsmall { font-size:11px; font-weight:600; fill:rgba(255,255,255,.82); }
@@ -582,6 +582,31 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
 .billsum .bar { margin-top:6px; }
 .billsum .sub { margin-top:6px; }
 @supports (background: color-mix(in srgb, red, blue)) { .group.themed .row .go { background:color-mix(in srgb, var(--role) 28%, var(--surface)); } }
+
+/* ===== wider cards get bigger type ===== */
+@container (min-width:430px) { .dtext h3 { font-size:28px; } .dtext p { font-size:var(--fs-md); } .dpill, .dcount { font-size:14px; } }
+
+/* ===== Cash flow: the waterfall card and its starting-balance sheet ===== */
+.dchart { position:relative; flex:1 1 auto; min-height:70px; margin:var(--s2) 0; }
+.dchart svg { position:absolute; left:0; top:0; display:block; overflow:visible; font-family:inherit; }
+.dcash .dtext h3 { font-size:20px; }
+.dcash .dtext p { overflow-wrap:anywhere; font-size:13px; }
+@container (min-width:430px) { .dcash .dtext h3 { font-size:22px; } .dcash .dtext p { font-size:14px; } }
+.dcash .dwarn { color:#ffd08a; }
+.dlegend .zone { border:1px dashed #ff9b9b; box-sizing:border-box; background:rgba(255,107,107,.45); border-radius:2px; }
+.dlegend i.sq { border-radius:2px; }
+.cashhead { margin:0 0 var(--s2); }
+#cashStart { width:100%; min-height:56px; font-size:24px; font-weight:800; border-radius:var(--r-md); }
+#cashWarn { width:100%; min-height:48px; font-size:18px; font-weight:700; }
+.cashquick { display:flex; gap:8px; margin-top:var(--s3); }
+.cashquick .btn { flex:1; padding-inline:0; justify-content:center; }
+.cashrow { display:flex; align-items:center; gap:var(--s3); margin-top:var(--s4); min-height:56px; }
+.cashrow > div { flex:1; min-width:0; }
+.cashrow b { display:block; font-size:var(--fs-md); }
+.cashprev { margin-top:var(--s3); padding:10px 14px; border-radius:var(--r-md); background:var(--surface-2); font-size:var(--fs-sm); font-weight:600; }
+.cashprev.ok { background:var(--success-soft); color:var(--success-text); }
+.cashprev.warn { background:var(--warning-soft); color:var(--warning-text); }
+.cashprev.bad { background:var(--danger-soft); color:var(--danger-text); }
 </style>
 
 <script>try{var t=localStorage.getItem("budget-tracker:theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);if(localStorage.getItem("budget-tracker:look")==="glass")document.documentElement.setAttribute("data-look","glass");var k=localStorage.getItem("budget-tracker:colorsCss");if(k){var s=document.createElement("style");s.id="userColors";s.textContent=k;document.head.appendChild(s)}var w=JSON.parse(localStorage.getItem("budget-tracker:wall")||"null");if(w&&w.on){var r=document.documentElement;r.classList.add("has-wall");r.style.setProperty("--wall-dim",String(Math.min(80,Math.max(0,+w.dim||0))/100));r.style.setProperty("--wall-blur",(Math.min(100,Math.max(0,+w.blur||0))*0.24)+"px")}}catch(e){}</script>
@@ -647,6 +672,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     <div id="importHost"></div>
     <div id="restoreHost"></div>
     <div id="themeHost"></div>
+    <div id="cashHost"></div>
   </div>
 </div>
 <div class="bill-screen" id="billScreen" role="dialog" aria-modal="true" aria-labelledby="billTitle" tabindex="-1" hidden></div>
@@ -667,7 +693,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
   const niceDate = (iso) => { const p = parseISO(iso); const w = new Date(Date.UTC(p.y, p.m, p.d)).getUTCDay(); return DOW[w] + ", " + MONTHS[p.m].slice(0, 3) + " " + p.d; };
   const fmt = (v) => { const n = Math.abs(v); const s = Number.isInteger(+n.toFixed(2)) ? n.toLocaleString("en-CA", { maximumFractionDigits: 0 }) : n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return (v < 0 ? "−$" : "$") + s; };
 
-  const state = { items: [], pay: new Map(), y: new Date().getFullYear(), m: new Date().getMonth(), manage: false, adding: false, ready: true, mode: "saved", note: "", budgets: {}, activeId: null, panel: false, pending: null, renaming: null, importText: "", sharing: false, importOpen: false, drawer: false, tab: "overview", billFilter: "all", spendFilter: "all", billView: "list", overdueCount: 0, themeOpen: false, loans: [], loanEdit: null, loanPay: null, ovCard: 0, billQuery: "", bill: null, billEdit: false, billList: null };
+  const state = { items: [], pay: new Map(), y: new Date().getFullYear(), m: new Date().getMonth(), manage: false, adding: false, ready: true, mode: "saved", note: "", budgets: {}, activeId: null, panel: false, pending: null, renaming: null, importText: "", sharing: false, importOpen: false, drawer: false, tab: "overview", billFilter: "all", spendFilter: "all", billView: "list", overdueCount: 0, themeOpen: false, cash: null, cashOpen: false, loans: [], loanEdit: null, loanPay: null, ovCard: 0, billQuery: "", bill: null, billEdit: false, billList: null };
   let itemsCol = null, payCol = null;
 
   /* ---------- storage: this device's localStorage, one entry holding every budget ---------- */
@@ -681,7 +707,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     const b = state.budgets[state.activeId];
     state.items = Array.isArray(b.items) ? b.items : [];
     state.pay = new Map(Object.entries(b.pay || {}));
-    state.loans = Array.isArray(b.loans) ? b.loans : []; state.loanEdit = null; state.loanPay = null;
+    state.loans = Array.isArray(b.loans) ? b.loans : []; state.cash = cleanCash(b.cash) || defaultCash(); state.loanEdit = null; state.loanPay = null;
   }
   function load() {
     let fresh = false, seeded = false, added = false;
@@ -696,15 +722,16 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
       }
       if (d && d.budgets && Object.keys(d.budgets).length) { state.budgets = d.budgets; state.activeId = d.budgets[d.active] ? d.active : Object.keys(d.budgets)[0]; seeded = !!d.seeded; }
     } catch (e) { state.mode = "local"; }
-    if (!state.activeId || !state.budgets[state.activeId]) { state.budgets = {}; state.activeId = uid(); state.budgets[state.activeId] = fresh ? (() => { const it = sampleItems(); return { name: "Example budget", items: it, pay: samplePay(it), loans: sampleLoans(), sample: true }; })() : { name: "My budget", items: [], pay: {} }; }
+    if (!state.activeId || !state.budgets[state.activeId]) { state.budgets = {}; state.activeId = uid(); state.budgets[state.activeId] = fresh ? (() => { const it = sampleItems(); return { name: "Example budget", items: it, pay: samplePay(it), loans: sampleLoans(), cash: sampleCash(), sample: true }; })() : { name: "My budget", items: [], pay: {} }; }
     if (!fresh && !seeded) { state.budgets[uid()] = exampleBudget(); added = true; }     // existing installs get the example once, so it shows in the list
     for (const b of Object.values(state.budgets)) if (b.sample) { const have = new Set((b.loans || []).map((l) => l.id)); for (const l of sampleLoans()) { if (!have.has(l.id)) { b.loans = (b.loans || []).concat([l]); added = true; } else if (l.kind === "card") { const cur = b.loans.find((x) => x.id === l.id); if (cur && !(cur.payment > 0)) { cur.payment = l.payment; added = true; } } } }
+    for (const b of Object.values(state.budgets)) if (b.sample && !b.cash) { b.cash = sampleCash(); added = true; }       // example budgets that predate the cash flow card
     loadActive();
     if (fresh || added) persist();      // keep the example stable from the first visit
   }
   function persist() {
     const b = state.budgets[state.activeId];
-    b.items = state.items; b.pay = Object.fromEntries(state.pay); b.loans = state.loans;
+    b.items = state.items; b.pay = Object.fromEntries(state.pay); b.loans = state.loans; b.cash = state.cash;
     if (state.mode === "local") return;
     try { localStorage.setItem(KEY, JSON.stringify({ version: 2, active: state.activeId, budgets: state.budgets, seeded: true })); }
     catch (e) { state.mode = "local"; }
@@ -754,7 +781,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
   async function backup() {
     persist();
     const name = curName();
-    const data = JSON.stringify({ app: "budget-tracker", version: 2, name, items: state.items, pay: Object.fromEntries(state.pay), loans: state.loans }, null, 2);
+    const data = JSON.stringify({ app: "budget-tracker", version: 2, name, items: state.items, pay: Object.fromEntries(state.pay), loans: state.loans, cash: state.cash }, null, 2);
     const fileName = "budget-" + slug(name) + "-" + todayISO() + ".json";
     const file = new File([data], fileName, { type: "application/json" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -774,7 +801,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
       if (!items.length && !(loans && loans.length)) throw new Error("no items");
       const fromFile = String(fileName || "").replace(/\.json$/i, "").replace(/^budget-/, "").replace(/-\d{4}-\d{2}-\d{2}$/, "").replace(/[-_]+/g, " ").trim().replace(/\b\w/g, (c) => c.toUpperCase());
       const name = str(d.name, 60).trim() || fromFile || "Imported budget";
-      state.pending = { name, items, pay: cleanPay(d.pay, items), loans, fileName: fileName || "pasted text" };
+      state.pending = { name, items, pay: cleanPay(d.pay, items), loans, cash: d.cash ? cleanCash(d.cash) : null, fileName: fileName || "pasted text" };
       state.note = ""; state.panel = false; state.importOpen = false; state.sharing = false; render();
       const rh = document.getElementById("restoreHost"); if (rh && rh.scrollIntoView) rh.scrollIntoView({ block: "nearest" });
     } catch (e) { state.pending = null; state.note = "That doesn’t look like a budget link or backup."; render(); }
@@ -799,7 +826,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
   }
   function payload(withHistory) {
     persist();
-    return { app: "budget-tracker", version: 2, name: curName(), items: state.items, pay: withHistory ? Object.fromEntries(state.pay) : {}, loans: state.loans };
+    return { app: "budget-tracker", version: 2, name: curName(), items: state.items, pay: withHistory ? Object.fromEntries(state.pay) : {}, loans: state.loans, ...(withHistory ? { cash: state.cash } : {}) };
   }
   async function makeLink(withHistory) { return location.href.split("#")[0] + "#b=" + await toToken(payload(withHistory)); }
   async function importText(text) {
@@ -836,7 +863,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
       if (samples.length === 1 && Object.keys(state.budgets).length === 1) delete state.budgets[samples[0]];     // a lone, untouched example makes way
       const taken = Object.values(state.budgets).map((b) => b.name.toLowerCase());
       if (taken.includes(label.toLowerCase())) { let n = 2; while (taken.includes((label + " (" + n + ")").toLowerCase())) n++; label += " (" + n + ")"; }
-      state.budgets[id] = { name: label, items: p.items, pay: p.pay, loans: p.loans || [] };
+      state.budgets[id] = { name: label, items: p.items, pay: p.pay, loans: p.loans || [], ...(p.cash ? { cash: p.cash } : {}) };
     } else {
       id = target; const b = state.budgets[id]; label = b.name;
       if (mode === "merge") {
@@ -844,14 +871,15 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
         for (const i of p.items) map.set(i.id, i);
         b.items = Array.from(map.values()); b.pay = { ...(b.pay || {}), ...p.pay };
         if (p.loans) { const lm = new Map((b.loans || []).map((l) => [l.id, l])); for (const l of p.loans) lm.set(l.id, l); b.loans = Array.from(lm.values()); }
-      } else { b.items = p.items; b.pay = p.pay; if (p.loans) b.loans = p.loans; }
+        if (p.cash) { const old = cleanCash(b.cash) || defaultCash(); b.cash = { starts: { ...old.starts, ...p.cash.starts }, warn: p.cash.warn, carry: p.cash.carry }; }
+      } else { b.items = p.items; b.pay = p.pay; if (p.loans) b.loans = p.loans; if (p.cash) b.cash = p.cash; }
     }
     state.activeId = id; loadActive();
     state.pending = null; state.panel = false; state.manage = false; state.adding = false;
     state.note = "Restored into “" + label + "” (" + state.items.length + " items).";
     persist(); render();
   }
-  function exampleBudget() { const it = sampleItems(); return { name: "Example budget", items: it, pay: samplePay(it), loans: sampleLoans(), sample: true }; }
+  function exampleBudget() { const it = sampleItems(); return { name: "Example budget", items: it, pay: samplePay(it), loans: sampleLoans(), cash: sampleCash(), sample: true }; }
   function addExample(open) {
     persist();
     const existing = Object.keys(state.budgets).find((k) => state.budgets[k].sample);
@@ -908,10 +936,10 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     }
     return out;
   }
-  function loadSample() { state.items = sampleItems(); state.pay = new Map(Object.entries(samplePay(state.items))); state.loans = sampleLoans(); state.budgets[state.activeId].sample = true; persist(); render(); }
+  function loadSample() { state.items = sampleItems(); state.pay = new Map(Object.entries(samplePay(state.items))); state.loans = sampleLoans(); state.cash = sampleCash(); state.budgets[state.activeId].sample = true; persist(); render(); }
   function startBlank() {
     const b = state.budgets[state.activeId];
-    b.items = []; b.pay = {}; b.loans = []; b.sample = false; if (b.name === "Example budget") b.name = "My budget";
+    b.items = []; b.pay = {}; b.loans = []; delete b.cash; b.sample = false; if (b.name === "Example budget") b.name = "My budget";
     loadActive(); state.manage = false; persist(); render();
   }
 
@@ -1099,8 +1127,9 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     else if (drawerFocus && drawerFocus.focus) { drawerFocus.focus(); drawerFocus = null; }
   }
   function openSheet(kind) {
-    state.panel = state.sharing = state.importOpen = state.adding = state.themeOpen = false; state.pending = null;
+    state.panel = state.sharing = state.importOpen = state.adding = state.themeOpen = state.cashOpen = false; state.pending = null; cashDraft = null;
     if (kind === "manage") state.panel = true;
+    if (kind === "cash") state.cashOpen = true;
     if (kind === "theme") state.themeOpen = true;
     if (kind === "add") state.adding = true;
     if (kind === "share") state.sharing = true;
@@ -1109,7 +1138,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     render();
     if (kind === "import") tryClipboardImport();
   }
-  function closeSheet() { state.panel = state.sharing = state.importOpen = state.adding = state.themeOpen = false; state.pending = null; render(); }
+  function closeSheet() { state.panel = state.sharing = state.importOpen = state.adding = state.themeOpen = state.cashOpen = false; state.pending = null; render(); }
   async function tryClipboardImport() {
     try { const t = await navigator.clipboard.readText(); if (t && /[uz]\.[A-Za-z0-9_-]{20,}|^\s*\{/.test(t)) { importText(t); return; } } catch (e) { /* the box is there to paste into */ }
     const bx = $("importText"); if (bx) bx.focus();
@@ -1179,7 +1208,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     const eb = $("editBar"); eb.replaceChildren();
     if (state.manage) eb.append(h("div", { class: "callout" }, h("b", {}, "Editing items. "), "Change names, amounts and due days below, or remove an item. ", h("button", { class: "btn small primary", onclick: () => { state.manage = false; render(); } }, "Done")));
     renderDrawer();
-    const open = state.panel || state.sharing || state.importOpen || state.adding || state.themeOpen || !!state.pending;
+    const open = state.panel || state.sharing || state.importOpen || state.adding || state.themeOpen || state.cashOpen || !!state.pending;
     const wrap = $("sheetWrap");
     if (open && wrap.hidden) { wrap.hidden = false; sheetFocus = document.activeElement; document.body.classList.add("noscroll"); setTimeout(() => $("sheet").focus(), 0); }
     if (!open && !wrap.hidden) { wrap.hidden = true; syncNoScroll(); if (sheetFocus && sheetFocus.focus) { try { sheetFocus.focus(); } catch (e) { /* element is gone */ } } sheetFocus = null; }
@@ -1394,7 +1423,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     v.classList.remove("l1", "l2", "l3", "l4"); body.classList.remove("ovscroll");
     if (state.tab !== "overview") return;
     const over = () => v.scrollHeight > v.clientHeight + 1 || wrap.scrollHeight > wrap.clientHeight + 1;
-    const cramped = () => deck.children.length > 0 && deck.clientHeight < Math.min(340, window.innerHeight * 0.4);   // the gauge cards need this much to read well
+    const cramped = () => deck.children.length > 0 && deck.clientHeight < Math.min(430, window.innerHeight * 0.5);   // the gauge cards get this much room before anything else does
     for (const lvl of ["l1", "l2", "l3", "l4"]) { if (!over() && !cramped()) return; v.classList.add(lvl); }
     if (over()) body.classList.add("ovscroll");                      // a very short screen: allow scrolling rather than cut anything off
   }
@@ -1433,7 +1462,9 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     const upcoming = bills.filter((o) => !isPaid(o) && o.due >= t && daysUntil(o.due) > 3);
     const varSpent = vars.reduce((s, o) => s + (paidAmt(o) || 0), 0);
     const varBudget = vars.reduce((s, o) => s + o.item.amount, 0);
-    const level = overdueList.length ? "red" : (soon.length || varSpent > varBudget) ? "amber" : "green";
+    let level = overdueList.length ? "red" : (soon.length || varSpent > varBudget) ? "amber" : "green";
+    { const tp = parseISO(t), cm0 = cashModel(state.y, state.m, state.cash);          // only this month and later, and only once a starting balance is set
+      if (cm0.st.kind !== "unset" && state.y * 12 + state.m >= tp.y * 12 + tp.m) { if (cm0.below0) level = "red"; else if (cm0.under && level === "green") level = "amber"; } }
 
     const ctx = { incomes, bills, vars, isPaid, paidAmt, t, expIn, gotIn, billsPaidCount, toPay, overdueList, soon, upcoming, varSpent, varBudget };
     state.overdueCount = overdueList.length;
@@ -1441,6 +1472,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     renderBudgets();
     renderShareImport();
     renderThemeSheet();
+    renderCashSheet();
     renderSample();
     renderOverview(ctx);
     renderLoans();
@@ -1462,7 +1494,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
 
   function renderStrip(level) {                                    // the pinned month bar: month arrows, Today and the health light
     const strip = $("strip"), tp = parseISO(todayISO()), here = state.y === tp.y && state.m === tp.m;
-    const words = { green: ["Green", "all clear"], amber: ["Amber", "something is due soon, or spending is over budget"], red: ["Red", "a bill is overdue"] }[level];
+    const words = { green: ["Green", "all clear"], amber: ["Amber", "something is due soon, spending is over budget, or your balance is getting low"], red: ["Red", "a bill is overdue, or your balance would go below zero"] }[level];
     strip.replaceChildren(
       h("div", { class: "monthpill" },
         h("button", { class: "nav", id: "prev", "aria-label": "Previous month", onclick: () => step(-1) }, ico("chevL")),
@@ -1473,7 +1505,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
   }
 
   /* ---------- Overview deck: three gauge cards, stacked; swipe or tap a chip to bring one forward ---------- */
-  const GAUGES = ["Bills", "Money in", "Spending"];
+  const GAUGES = ["Bills", "Money in", "Spending", "Cash flow"];
   const LIVE = { paid: "#2cc275", soon: "#f6ad37", over: "#ff6a60", soft: "rgba(255,255,255,.3)", up: "rgba(255,255,255,.86)" };   // drawn on the dark card, so fixed light tones
   function ringSvg(label, slices, big, small) {
     const R = 54, CIRC = 2 * Math.PI * R, live = slices.filter((x) => x[1] > 0), total = live.reduce((t, x) => t + x[1], 0);
@@ -1519,6 +1551,169 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     $("deckChips").querySelectorAll(".chipbtn").forEach((b, k) => b.setAttribute("aria-pressed", String(k === state.ovCard)));
     if (announce) $("deckLive").textContent = GAUGES[state.ovCard] + ", " + (state.ovCard + 1) + " of " + GAUGES.length;
   }
+
+  /* ---------- cash flow: a starting balance, a low-balance line, and a waterfall of the month ---------- */
+  const isNum = (v) => typeof v === "number" && isFinite(v);
+  const ymKey = (y, m) => y + "-" + pad(m + 1);
+  const defaultCash = () => ({ starts: {}, warn: 500, carry: true });
+  function cleanCash(x) {
+    if (!x || typeof x !== "object") return null;
+    const starts = {};
+    if (x.starts && typeof x.starts === "object") for (const [k, v] of Object.entries(x.starts)) if (/^\d{4}-\d{2}$/.test(k) && isNum(v) && Math.abs(v) < 1e9) starts[k] = Math.round(v * 100) / 100;
+    return { starts, warn: isNum(x.warn) && x.warn >= 0 && x.warn < 1e9 ? Math.round(x.warn * 100) / 100 : 500, carry: x.carry !== false };
+  }
+  function sampleCash() { const t = new Date(); return { starts: { [ymKey(t.getFullYear(), t.getMonth())]: 1700 }, warn: 500, carry: true }; }
+  const kfmt = (v) => { const a = Math.abs(v), t = a >= 1000 ? ("$" + (a / 1000).toFixed(1) + "k").replace(".0k", "k") : "$" + Math.round(a); return (v < 0 ? "−" : "") + t; };
+  function monthSteps(y, m) {                                      // bills and money in for a month, in date order (money in first on the same day)
+    const rows = [];
+    for (const it of state.items) {
+      if (it.type !== "income" && it.type !== "bill") continue;
+      for (const o of occurrences(it, y, m)) { const pr = state.pay.get(o.key), amt = pr && isNum(+pr.amt) ? +pr.amt : it.amount; rows.push({ due: o.due, name: it.name, amt: it.type === "income" ? amt : -amt, inc: it.type === "income" }); }
+    }
+    return rows.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : (b.inc ? 1 : 0) - (a.inc ? 1 : 0) || a.name.localeCompare(b.name)));
+  }
+  function cashStart(y, m, cash) {                                 // set for this month, else carried from the latest earlier month that has one
+    const starts = (cash && cash.starts) || {}, here = y * 12 + m;
+    if (isNum(starts[ymKey(y, m)])) return { v: starts[ymKey(y, m)], kind: "set" };
+    if (cash && cash.carry !== false) {
+      for (let back = 1; back <= 36; back++) {
+        const t = here - back;
+        if (isNum(starts[ymKey(Math.floor(t / 12), t % 12)])) {
+          let v = starts[ymKey(Math.floor(t / 12), t % 12)];
+          for (let u = t; u < here; u++) v += monthSteps(Math.floor(u / 12), u % 12).reduce((sum, r) => sum + r.amt, 0);
+          return { v: Math.round(v * 100) / 100, kind: "carried" };
+        }
+      }
+    }
+    return { v: 0, kind: "unset" };
+  }
+  function cashModel(y, m, cash) {
+    const st = cashStart(y, m, cash), warn = cash && isNum(cash.warn) ? cash.warn : 500, rows = monthSteps(y, m);
+    const cols = [{ kind: "total", label: "Start", from: 0, to: st.v, day: 1 }];
+    let run = st.v, low = st.v, lowAt = 0;
+    rows.forEach((r, i) => { const a = run; run = Math.round((run + r.amt) * 100) / 100; cols.push({ kind: r.amt > 0 ? "inc" : "dec", label: String(parseISO(r.due).d), from: a, to: run, amt: r.amt, name: r.name, due: r.due, day: parseISO(r.due).d }); if (run < low) { low = run; lowAt = i + 1; } });
+    cols.push({ kind: "total", label: "End", from: 0, to: run, day: daysIn(y, m) });
+    const real = st.kind !== "unset";
+    let firstUnder = -1, back = null;
+    if (real && low < warn) { firstUnder = cols.findIndex((c, i) => i < cols.length - 1 && c.to < warn); for (let i = firstUnder + 1; i < cols.length - 1; i++) if (cols[i].to >= warn) { back = cols[i]; break; } }
+    return { st, cols, start: st.v, end: run, low, lowAt, lowCol: cols[lowAt], warn, under: real && low < warn, below0: real && low < 0, firstUnder, back };
+  }
+  function cashNote(mod, y, m) {
+    const mon = MONTHS[m].slice(0, 3), dayOf = (c) => mon + " " + c.day;
+    if (mod.st.kind === "unset") return { pill: "Set starting balance", dot: null, text: "Add your balance on the 1st to see where you land.", bad: false };
+    const lowTxt = fmt(mod.low) + " on " + dayOf(mod.lowCol);
+    if (!mod.under) return { pill: "On track", dot: "green", text: "Ends at " + fmt(mod.end) + ". Lowest is " + lowTxt + ".", bad: false };
+    const until = mod.back ? " until " + mod.back.name + " on " + dayOf(mod.back) : " for the rest of the month";
+    return { pill: mod.below0 ? "Below $0" : "Low balance", dot: mod.below0 ? "red" : "amber", text: (mod.below0 ? "Goes below $0: " : "Dips to ") + lowTxt + until + ".", bad: true };
+  }
+  function cashSvg(mod, W, H) {                                    // W and H: the size of the box it will fill, so it uses all of it
+    W = Math.max(160, Math.round(W || 320)); H = Math.max(80, Math.round(H || 200));
+    const L = 46, R = W - 6, T = 14, B = H - 22, cols = mod.cols, n = cols.length;
+    let hi = Math.max(mod.warn, ...cols.map((c) => Math.max(c.from, c.to))), lo = Math.min(0, ...cols.map((c) => Math.min(c.from, c.to)));
+    if (hi === lo) hi = lo + 1000;
+    const pad2 = (hi - lo) * 0.08; hi += pad2; if (lo < 0) lo -= pad2;
+    const y = (v) => B - ((v - lo) / (hi - lo)) * (B - T), cw = (R - L) / n, bw = Math.max(4, Math.min(14, cw * 0.66)), cx = (i) => L + (i + 0.5) * cw;
+    const out = [], f1 = (v) => v.toFixed(1);
+    const raw = (hi - lo) / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))), step = [1, 2, 2.5, 5, 10].map((c) => c * mag).find((c) => c >= raw);
+    for (let tv = Math.ceil(lo / step) * step; tv <= hi + 1e-6; tv += step) {
+      out.push('<line x1="' + L + '" y1="' + f1(y(tv)) + '" x2="' + R + '" y2="' + f1(y(tv)) + '" stroke="#ffffff" stroke-opacity="' + (Math.abs(tv) < 1e-6 ? 0.4 : 0.12) + '"/>');
+      if (Math.abs(y(tv) - y(mod.warn)) > 11) out.push('<text x="' + (L - 6) + '" y="' + f1(y(tv) + 3.5) + '" text-anchor="end" font-size="10" fill="#d3e1e6">' + kfmt(tv) + '</text>');
+    }
+    if (mod.warn > lo) {
+      out.push('<rect x="' + L + '" y="' + f1(y(Math.min(mod.warn, hi))) + '" width="' + (R - L) + '" height="' + f1(B - y(Math.min(mod.warn, hi))) + '" fill="#ff6b6b" fill-opacity="0.24"/>');
+      out.push('<line x1="' + L + '" y1="' + f1(y(mod.warn)) + '" x2="' + R + '" y2="' + f1(y(mod.warn)) + '" stroke="#ff9b9b" stroke-width="1.2" stroke-dasharray="4 3"/>');
+      out.push('<text x="' + (L - 6) + '" y="' + f1(y(mod.warn) + 3.5) + '" text-anchor="end" font-size="10" font-weight="700" fill="#ffb4b4">' + kfmt(mod.warn) + '</text>');
+    }
+    const fillOf = { total: "#8fe3f2", inc: "#6ee7a0", dec: "#c27be8" }, steps = cols.filter((c) => c.kind !== "total"), maxAbs = Math.max(1, ...steps.map((c) => Math.abs(c.amt)));
+    let labels = 0, prev = null;
+    cols.forEach((c, i) => {
+      const top = Math.max(c.from, c.to), bot = Math.min(c.from, c.to), x = cx(i) - bw / 2, yt = y(top), h = Math.max(1.4, y(bot) - y(top));
+      if (prev !== null) out.push('<line x1="' + f1(cx(i - 1) + bw / 2) + '" y1="' + f1(y(prev)) + '" x2="' + f1(x) + '" y2="' + f1(y(prev)) + '" stroke="#9fb4bf" stroke-width="0.9"/>');
+      const under = mod.st.kind !== "unset" && c.kind !== "total" && c.to < mod.warn;
+      out.push('<rect x="' + f1(x) + '" y="' + f1(yt) + '" width="' + f1(bw) + '" height="' + f1(h) + '" rx="2" fill="' + fillOf[c.kind] + '"' + (under ? ' stroke="#ff8f8f" stroke-width="1.6"' : "") + '/>');
+      const edge = i === 0 || i === n - 1, showLab = edge ? cw >= 14 || i === 0 : (cw >= 24 || (i % (cw >= 17 ? 1 : cw >= 11 ? 2 : 3) === 0 && i !== 1 && i !== n - 2));
+      if (showLab) out.push('<text x="' + f1(cx(i)) + '" y="' + (B + 16) + '" text-anchor="middle" font-size="10" fill="#d3e1e6">' + c.label + '</text>');
+      if (c.kind === "total") out.push('<text x="' + f1(cx(i)) + '" y="' + f1(c.to >= 0 ? yt - 4 : y(bot) + 11) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">' + kfmt(c.to) + '</text>');
+      else if (Math.abs(c.amt) >= 0.5 * maxAbs && labels < 6) { labels++; out.push('<text x="' + f1(cx(i)) + '" y="' + f1(c.amt > 0 ? yt - 4 : y(bot) + 11) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">' + (c.amt > 0 ? "+" : "") + kfmt(c.amt) + '</text>'); }
+      prev = c.to;
+    });
+    if (mod.under) {
+      const lx = cx(mod.lowAt), anchorEnd = lx > (L + R) / 2;
+      out.push('<line x1="' + f1(lx) + '" y1="' + (T + 14) + '" x2="' + f1(lx) + '" y2="' + f1(y(mod.low) - 3) + '" stroke="#ffb454" stroke-width="1" stroke-dasharray="2 2"/>');
+      out.push('<circle cx="' + f1(lx) + '" cy="' + f1(y(mod.low)) + '" r="3.6" fill="#ffb454" stroke="#101b20" stroke-width="1.2"/>');
+      out.push('<text x="' + f1(lx + (anchorEnd ? 4 : -4)) + '" y="' + (T + 9) + '" text-anchor="' + (anchorEnd ? "end" : "start") + '" font-size="10.5" font-weight="800" fill="#ffb454">Low ' + kfmt(mod.low) + '</text>');
+    }
+    const label = "Waterfall for the month. Starts at " + fmt(mod.start) + ", ends at " + fmt(mod.end) + ". Lowest point " + fmt(mod.low) + ".";
+    const div = document.createElement("div");
+    div.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + label + '">' + out.join("") + "</svg>";
+    return div.firstChild;
+  }
+  function cashCard(i, mod) {
+    const note = cashNote(mod, state.y, state.m);
+    const lg = (c, t, cls) => h("span", {}, h("i", { class: cls || "sq", style: cls ? "" : "background:" + c }), t);
+    const chart = h("div", { class: "dchart" });
+    chart._draw = () => { const w = chart.clientWidth, hh = chart.clientHeight; if (w > 40 && hh > 40 && chart._size !== w + "x" + hh) { chart._size = w + "x" + hh; chart.replaceChildren(cashSvg(mod, w, hh)); } };
+    cashCharts.push(chart);
+    const card = h("div", { class: "dcard tinted dcash", role: "group", "aria-roledescription": "slide", "aria-label": "Cash flow, " + (i + 1) + " of " + GAUGES.length, "data-i": String(i), style: "--tint:var(--primary)" },
+      h("div", { class: "dtop" }, h("span", { class: "dpill" }, note.dot ? h("span", { class: "dot " + note.dot, "aria-hidden": "true" }) : null, note.pill), h("span", { class: "dcount", "aria-hidden": "true" }, (i + 1) + "/" + GAUGES.length)),
+      chart,
+      h("div", { class: "dtext" }, h("h3", {}, "Cash flow"), h("p", { class: note.bad ? "dwarn" : "" }, note.text)),
+      h("div", { class: "dlegend", "aria-hidden": "true" }, lg("#6ee7a0", "Increase"), lg("#c27be8", "Decrease"), lg("#8fe3f2", "Total"), lg("", "Low zone", "zone")),
+      h("button", { class: "seemore", onclick: () => openSheet("cash") }, h("span", {}, mod.st.kind === "unset" ? "Set starting balance" : (mod.st.kind === "carried" ? "Starts at " : "Starting balance ") + fmt(mod.start)), h("span", { class: "go", "aria-hidden": "true" }, ico("edit"))));
+    card.addEventListener("click", (e) => { if (+card.dataset.i !== state.ovCard) { e.preventDefault(); e.stopPropagation(); showGauge(i, true); } });
+    return card;
+  }
+  let cashDraft = null, cashRO = null, cashCharts = [];
+  function watchCharts() {                                        // redraw each chart whenever its box changes size
+    if (cashRO) cashRO.disconnect();
+    if (!window.ResizeObserver) { cashCharts.forEach((c) => c._draw()); return; }
+    cashRO = new ResizeObserver((es) => es.forEach((e) => e.target._draw && e.target._draw()));
+    cashCharts.forEach((c) => cashRO.observe(c));
+  }
+  function renderCashSheet() {
+    const host = $("cashHost"); host.replaceChildren();
+    if (!state.cashOpen) { cashDraft = null; return; }
+    const key = ymKey(state.y, state.m), monName = MONTHS[state.m] + " " + state.y, cur = cashStart(state.y, state.m, state.cash);
+    if (!cashDraft) cashDraft = { start: cur.kind === "unset" ? "" : String(cur.v), warn: String(state.cash.warn), carry: state.cash.carry !== false };
+    const parse = (v) => { const t = String(v).replace(/[$,\s]/g, "").replace(/^\((.*)\)$/, "-$1"); return /^-?(\d+\.?\d*|\.\d+)$/.test(t) ? parseFloat(t) : NaN; };
+    const sInp = h("input", { id: "cashStart", type: "text", inputmode: "decimal", autocomplete: "off", value: cashDraft.start, "aria-describedby": "cashPrev" });
+    const wInp = h("input", { id: "cashWarn", type: "text", inputmode: "decimal", autocomplete: "off", value: cashDraft.warn });
+    const preview = h("div", { class: "cashprev", id: "cashPrev", role: "status", "aria-live": "polite" });
+    const err = h("div", { class: "sub", role: "alert" });
+    const refresh = () => {
+      cashDraft.start = sInp.value; cashDraft.warn = wInp.value;
+      const sv = parse(sInp.value), wv = parse(wInp.value);
+      if (isNaN(sv) || isNaN(wv) || wv < 0) { preview.textContent = "Enter your balance to see where you land."; preview.className = "cashprev"; return; }
+      const mm = cashModel(state.y, state.m, { starts: { ...state.cash.starts, [key]: sv }, warn: wv, carry: cashDraft.carry });
+      preview.textContent = "With these numbers: lowest point " + fmt(mm.low) + " on " + MONTHS[state.m].slice(0, 3) + " " + mm.lowCol.day + ", ends at " + fmt(mm.end) + "." + (mm.below0 ? " That goes below $0." : mm.under ? " That is under your line." : "");
+      preview.className = "cashprev " + (mm.below0 ? "bad" : mm.under ? "warn" : "ok");
+    };
+    sInp.addEventListener("input", refresh); wInp.addEventListener("input", refresh);
+    const nudge = (d) => { const sv = parse(sInp.value); sInp.value = String(Math.round(((isNaN(sv) ? 0 : sv) + d) * 100) / 100); refresh(); };
+    const quick = (label, d) => h("button", { type: "button", class: "btn", onclick: () => nudge(d) }, label);
+    const sw = h("button", { type: "button", class: "sw", role: "switch", "aria-checked": String(cashDraft.carry), "aria-label": "Carry over each month", onclick: () => { cashDraft.carry = !cashDraft.carry; sw.setAttribute("aria-checked", String(cashDraft.carry)); refresh(); } });
+    const save = () => {
+      const sv = parse(sInp.value), wv = parse(wInp.value);
+      if (isNaN(sv)) { err.textContent = "Enter your balance on the 1st, like 2500 or -150."; sInp.focus(); return; }
+      if (isNaN(wv) || wv < 0) { err.textContent = "Enter the low balance line as 0 or more."; wInp.focus(); return; }
+      state.budgets[state.activeId].sample = false;
+      state.cash = { starts: { ...state.cash.starts, [key]: Math.round(sv * 100) / 100 }, warn: Math.round(wv * 100) / 100, carry: cashDraft.carry };
+      persist(); state.cashOpen = false; state.note = "Starting balance saved for " + monName + "."; render();
+    };
+    const clear = () => { const s2 = { ...state.cash.starts }; delete s2[key]; state.cash = { ...state.cash, starts: s2 }; persist(); state.cashOpen = false; state.note = "Cleared the starting balance for " + monName + "."; render(); };
+    refresh();
+    host.append(h("div", { class: "panel" }, h("h3", { class: "cashhead" }, "Starting balance"),
+      h("p", { class: "sub" }, "What is in your account on " + MONTHS[state.m].slice(0, 3) + " 1? The waterfall starts here and rises or falls with every bill and paycheck."),
+      h("label", { for: "cashStart", style: "display:block;margin:var(--s3) 0 6px;font-weight:700;font-size:var(--fs-sm)" }, "Balance on " + MONTHS[state.m].slice(0, 3) + " 1"), sInp,
+      h("div", { class: "cashquick" }, quick("−$500", -500), quick("−$100", -100), quick("+$100", 100), quick("+$500", 500)),
+      h("div", { class: "cashrow" }, h("div", {}, h("b", {}, "Carry over each month"), h("span", { class: "sub" }, "Start each later month from the month before’s ending balance.")), sw),
+      h("label", { for: "cashWarn", style: "display:block;margin:var(--s4) 0 6px;font-weight:700;font-size:var(--fs-sm)" }, "Low balance warning"), wInp,
+      h("p", { class: "sub", style: "margin-top:6px" }, "Anything under this line is shaded red on the waterfall, and the health light turns amber. Below $0 turns it red."),
+      preview, err,
+      h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: save }, "Save"), h("button", { class: "btn", onclick: closeSheet }, "Cancel"),
+        isNum(state.cash.starts[key]) ? h("button", { class: "btn", onclick: clear }, "Clear this month") : null)));
+  }
+
   function renderDeck(c) {
     const deck = $("deck"), chipsEl = $("deckChips"); deck.replaceChildren(); chipsEl.replaceChildren();
     if (!state.items.length) return;
@@ -1541,9 +1736,12 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
         pill: c.vars.length ? (over ? fmt(c.varSpent - c.varBudget) + " over" : fmt(c.varBudget - c.varSpent) + " left") : "No budgets yet", dot: c.vars.length ? (over ? "red" : "green") : null,
         sub: c.vars.length ? fmt(c.varSpent) + " of " + fmt(c.varBudget) + " spent" : "Add an everyday budget",
         goLabel: "See spending", go: () => setTab("spending") }];
-    const chipText = [gauges[0].big, gauges[1].big, gauges[2].big];
+    const cm = cashModel(state.y, state.m, state.cash);
+    const chipText = [gauges[0].big, gauges[1].big, gauges[2].big, cm.st.kind === "unset" ? "Set up" : cm.below0 ? "Below $0" : cm.under ? "Low" : kfmt(cm.end)];
     chipsEl.append(...GAUGES.map((t, i) => h("button", { class: "chipbtn", "aria-pressed": String(i === state.ovCard), onclick: () => showGauge(i, true) }, t, " ", h("span", { class: "n" }, chipText[i]))));
-    deck.append(...gauges.map((g, i) => deckCard(i, g)));
+    cashCharts = [];
+    deck.append(...gauges.map((g, i) => deckCard(i, g)), cashCard(3, cm));
+    watchCharts();
     layoutDeck(0);
   }
 
