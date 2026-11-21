@@ -569,6 +569,19 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
   html[data-look="glass"] .tabbar { background:var(--nav); }
   html[data-look="glass"] .drawer { background:#1d1e21; }
 }
+
+/* ===== your three colors on every screen (each budget keeps its own) =====
+   Card color = bills. Highlight color = money in and the schedule. Bar and chart color = spending, charts and progress.
+   Headings get a small marker in their color, the Bills tab gets a summary card with bars, and each bill's arrow button takes a soft tint of its section color. */
+.bar-title .bt::before { content:""; display:inline-block; width:6px; height:.95em; margin-right:9px; border-radius:3px; background:var(--role, var(--brand)); box-shadow:inset 0 0 0 1px rgba(0,0,0,.16); vertical-align:-.1em; }
+.bar.t-brand > i { background:var(--brand); box-shadow:inset 0 0 0 1px rgba(0,0,0,.22); }
+.bar.t-accent > i { background:var(--accent); box-shadow:inset 0 0 0 1px rgba(0,0,0,.22); }
+.billsum { display:grid; gap:var(--s4); margin-bottom:var(--s4); }
+.billsum .sumtop { display:flex; justify-content:space-between; align-items:baseline; gap:var(--s3); }
+.billsum .sv { font-size:20px; font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+.billsum .bar { margin-top:6px; }
+.billsum .sub { margin-top:6px; }
+@supports (background: color-mix(in srgb, red, blue)) { .group.themed .row .go { background:color-mix(in srgb, var(--role) 28%, var(--surface)); } }
 </style>
 
 <script>try{var t=localStorage.getItem("budget-tracker:theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);if(localStorage.getItem("budget-tracker:look")==="glass")document.documentElement.setAttribute("data-look","glass");var k=localStorage.getItem("budget-tracker:colorsCss");if(k){var s=document.createElement("style");s.id="userColors";s.textContent=k;document.head.appendChild(s)}var w=JSON.parse(localStorage.getItem("budget-tracker:wall")||"null");if(w&&w.on){var r=document.documentElement;r.classList.add("has-wall");r.style.setProperty("--wall-dim",String(Math.min(80,Math.max(0,+w.dim||0))/100));r.style.setProperty("--wall-blur",(Math.min(100,Math.max(0,+w.blur||0))*0.24)+"px")}}catch(e){}</script>
@@ -1563,7 +1576,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
           return h("div", { class: "chip " + cls }, h("b", {}, String(parseISO(o.due).d)), h("span", { class: "n" }, o.item.name), h("span", { class: "a" }, (inc ? "+" : "") + fmt(o.item.amount)));
         }) : h("div", { class: "none" }, "Nothing due"));
     });
-    sch.append(h("div", { class: "bar-title" }, h("span", {}, "Schedule"), h("button", { class: "linkbtn", onclick: () => { state.billView = "list"; saveUI(); render(); } }, "Show list")), h("div", { class: "weeks", role: "region", "aria-label": "Weeks of " + MONTHS[m], tabindex: "0" }, weeks));
+    sch.append(h("div", { class: "bar-title", style: "--role:var(--accent)" }, h("span", { class: "bt" }, "Schedule"), h("button", { class: "linkbtn", onclick: () => { state.billView = "list"; saveUI(); render(); } }, "Show list")), h("div", { class: "weeks", role: "region", "aria-label": "Weeks of " + MONTHS[m], tabindex: "0" }, weeks));
 
     // planned vs actual spending, six months ending with the month shown
     const pts = [];
@@ -1573,7 +1586,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
       for (const it of state.items) { if (it.type === "income") continue; for (const o of occurrences(it, yy, mm)) { planned += it.amount; const p = state.pay.get(o.key); if (p) { actual += p.amt ?? it.amount; any = true; } } }
       pts.push({ label: MONTHS[mm].slice(0, 3), planned, actual: any ? actual : null });
     }
-    pl.append(h("div", { class: "bar-title" }, "Planned vs actual spending"), h("div", { class: "card chart" }, chartPlanned(pts), pts.some((p) => p.actual != null) ? null : h("div", { class: "sub", style: "text-align:center;margin-top:6px" }, "Mark bills paid and enter spending to see your actual line fill in.")));
+    pl.append(h("div", { class: "bar-title", style: "--role:var(--primary)" }, h("span", { class: "bt" }, "Planned vs actual spending")), h("div", { class: "card chart" }, chartPlanned(pts), pts.some((p) => p.actual != null) ? null : h("div", { class: "sub", style: "text-align:center;margin-top:6px" }, "Mark bills paid and enter spending to see your actual line fill in.")));
   }
 
   function chartPlanned(pts) {
@@ -1716,7 +1729,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
       svg.append(svgEl("line", { x1: L, x2: W - R, y1: yv(v), y2: yv(v), class: "grid" }));
       const tx = svgEl("text", { x: L - 8, y: yv(v) + 4, "text-anchor": "end" }); tx.textContent = "$" + d3ish(Math.round(v)); svg.append(tx);
     }
-    const every = Math.max(1, Math.ceil(vals.length / 6));
+    const every = Math.max(1, Math.ceil(vals.length / 4));      // few enough labels that none run into each other
     labels.forEach((lb, i) => { if (i % every) return; const tx = svgEl("text", { x: x(i), y: H - 8, "text-anchor": i === 0 ? "start" : "middle" }); tx.textContent = lb; svg.append(tx); });
     let line = "", area = "M" + x(0) + " " + yv(0) + " ";
     vals.forEach((v, i) => { line += (i ? "L" : "M") + x(i) + " " + yv(v) + " "; area += "L" + x(i) + " " + yv(v) + " "; });
@@ -1732,7 +1745,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
 
   function renderDebts() {
     const host = $("debts"); host.replaceChildren();
-    host.append(h("div", { class: "bar-title" }, "Debt balance prediction"));
+    host.append(h("div", { class: "bar-title", style: "--role:var(--primary)" }, h("span", { class: "bt" }, "Debt balance prediction")));
     if (!state.loans.length) { host.append(h("div", { class: "list" }, h("div", { class: "empty" }, "Add a loan or credit card in Settings to see how its balance could fall, month by month. ", h("button", { class: "btn small", onclick: () => setTab("settings") }, "Open Settings")))); return; }
     const now = new Date(), ty = now.getFullYear(), tm = now.getMonth(), debts = state.loans.slice().sort((a, b) => b.balance - a.balance);
     const sel = (state.y - ty) * 12 + (state.m - tm), k = Math.max(0, sel);
@@ -1786,10 +1799,10 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     const mi = (icon, label, fn) => h("button", { class: "menu-item", onclick: fn }, ico(icon), h("span", { class: "grow" }, label));
     host.append(
       h("p", { class: "sub", style: "margin-top:12px" }, "Switch on bills that come out by themselves. They are marked paid on the due day and show a lock instead of a switch."),
-      group("Automatic bills", autoRows.length ? autoRows : [h("div", { class: "empty" }, "Add a bill first, then come back to make it automatic.")], cand.length ? onCount + " of " + cand.length + " automatic" : null),
-      group("Loans and cards", loanRows, loanCount || null),
+      group("Automatic bills", autoRows.length ? autoRows : [h("div", { class: "empty" }, "Add a bill first, then come back to make it automatic.")], cand.length ? onCount + " of " + cand.length + " automatic" : null, "brand"),
+      group("Loans and cards", loanRows, loanCount || null, "primary"),
       state.loanEdit === "new" ? null : h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => { state.loanEdit = "new"; state.loanPay = null; render(); } }, "Add a loan or card")),
-      group("Appearance and data", [mi("palette", "Wallpaper and colors…", () => openSheet("theme")), mi("folder", "Manage budgets…", () => openSheet("manage")), mi("share", "Share this budget", () => openSheet("share")), mi("download", "Save a backup file", backup)]));
+      group("Appearance and data", [mi("palette", "Wallpaper and colors…", () => openSheet("theme")), mi("folder", "Manage budgets…", () => openSheet("manage")), mi("share", "Share this budget", () => openSheet("share")), mi("download", "Save a backup file", backup)], null, "accent"));
   }
 
 /* ---------- tabs, filters and the views behind them ---------- */
@@ -1858,8 +1871,17 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     fh.append(chips([["all", "All"], ["unpaid", "Unpaid"], ["paid", "Paid"], ["overdue", "Overdue"]], state.billFilter, (v) => { state.billFilter = v; saveUI(); render(); }, counts, "Filter bills"));
     const pass = (o) => matchesQuery(o) && (state.billFilter === "unpaid" ? !c.isPaid(o) : state.billFilter === "paid" ? c.isPaid(o) : state.billFilter === "overdue" ? (!c.isPaid(o) && o.due < c.t) : true);
     const inc = c.incomes.filter(pass), bl = c.bills.filter(pass);
-    if (inc.length) lh.append(group("Money in", inc.map(row)));
-    if (bl.length) lh.append(group("Bills", bl.map(row), c.billsPaidCount + " of " + c.bills.length + " paid"));
+    if (c.bills.length || c.incomes.length) {                      // month at a glance, with a bar in each of your colors
+      const part = (label, value, sub, frac, role) => h("div", { class: "sumrow" },
+        h("div", { class: "sumtop" }, h("span", { class: "l" }, label), h("span", { class: "sv" }, value)),
+        h("div", { class: "bar t-" + role, role: "img", "aria-label": label + ": " + value }, h("i", { style: "width:" + Math.round(Math.max(0, Math.min(1, frac)) * 100) + "%" })),
+        h("div", { class: "sub" }, sub));
+      lh.append(h("div", { class: "card spendcard billsum" },
+        c.bills.length ? part("Bills paid", c.billsPaidCount + " of " + c.bills.length, c.billsPaidCount < c.bills.length ? fmt(c.toPay) + " still to pay" : "Every bill is paid", c.billsPaidCount / c.bills.length, "brand") : null,
+        c.incomes.length ? part("Money in received", fmt(c.gotIn) + " of " + fmt(c.expIn), c.expIn > c.gotIn ? fmt(c.expIn - c.gotIn) + " still to come" : "All received", c.expIn ? c.gotIn / c.expIn : 0, "accent") : null));
+    }
+    if (inc.length) lh.append(group("Money in", inc.map(row), null, "accent"));
+    if (bl.length) lh.append(group("Bills", bl.map(row), c.billsPaidCount + " of " + c.bills.length + " paid", "brand"));
     if (!inc.length && !bl.length) lh.append(emptyNote(q ? "Nothing matches “" + q + "”." : { unpaid: "Everything is paid. Nice work.", paid: "Nothing is marked paid yet.", overdue: "Nothing is overdue.", all: "No bills or income this month." }[state.billFilter]));
   }
 
@@ -1876,7 +1898,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     const counts = { all: c.vars.length, over: c.vars.filter(isOver).length, within: c.vars.filter((o) => !isOver(o)).length };
     fh.append(chips([["all", "All"], ["over", "Over budget"], ["within", "Within budget"]], state.spendFilter, (v) => { state.spendFilter = v; saveUI(); render(); }, counts, "Filter spending"));
     const list = c.vars.filter((o) => state.spendFilter === "over" ? isOver(o) : state.spendFilter === "within" ? !isOver(o) : true);
-    lh.append(list.length ? group("Everyday spending", list.map(vrow), "Enter what you’ve spent so far") : emptyNote(state.spendFilter === "over" ? "Nothing is over budget." : "Every item is over budget."));
+    lh.append(list.length ? group("Everyday spending", list.map(vrow), "Enter what you’ve spent so far", "primary") : emptyNote(state.spendFilter === "over" ? "Nothing is over budget." : "Every item is over budget."));
   }
 
   function renderInsights(c) {
@@ -1897,7 +1919,7 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
     if (!rows.length) return;
     if (rows.length > 8) { const rest = rows.slice(7); rows = rows.slice(0, 7).concat([{ name: "Other (" + rest.length + ")", planned: rest.reduce((s, r) => s + r.planned, 0), done: rest.reduce((s, r) => s + r.done, 0) }]); }
     const scale = Math.max(1, ...rows.map((r) => Math.max(r.planned, r.done)));
-    wh.append(h("div", { class: "bar-title" }, "Where the money goes"),
+    wh.append(h("div", { class: "bar-title", style: "--role:var(--primary)" }, h("span", { class: "bt" }, "Where the money goes")),
       h("div", { class: "list" }, rows.map((r) => h("div", { class: "hrow" },
         h("span", { class: "hn" }, r.name),
         h("div", { class: "hbar" + (r.done > r.planned ? " over" : ""), role: "img", "aria-label": r.name + ": " + fmt(r.done) + " of " + fmt(r.planned) },
@@ -1906,8 +1928,8 @@ html[data-look="glass"] .drawer { background:linear-gradient(165deg, rgba(48,49,
         h("div", { class: "hlegend" }, h("span", {}, h("i", { style: "background:var(--primary)" }), "Paid or spent so far"), h("span", {}, h("i", { style: "background:var(--info-soft)" }), "Planned"))));
   }
 
-  function group(title, rows, right) {
-    return h("section", { class: "group" }, h("div", { class: "bar-title" }, h("span", { class: "bt" }, title), right ? h("span", { class: "count" }, right) : null), h("div", { class: "list" }, rows));
+  function group(title, rows, right, role) {                       // role: which of your three colors marks this section
+    return h("section", { class: "group" + (role ? " themed" : ""), ...(role ? { style: "--role:var(--" + role + ")" } : {}) }, h("div", { class: "bar-title" }, h("span", { class: "bt" }, title), right ? h("span", { class: "count" }, right) : null), h("div", { class: "list" }, rows));
   }
 
   function row(o) {

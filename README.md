@@ -13,7 +13,7 @@ If someone already has budgets saved, the example is added to their list once. *
 - **Month bar:** stays pinned at the top while you scroll. The arrows move between months and **Today** jumps back to this month. Next to it is the health light. Green means all clear. Amber means a bill is due within 3 days or everyday spending is over budget. Red means a bill is overdue. On narrow phones the light shows without its word.
 - **Tab bar (bottom):** a floating dark bar with five tabs. The open tab turns white and shows its name. A red badge on Bills counts overdue bills.
   - **Overview:** one fixed screen with no scrolling. The three gauges (Bills, Money in, Spending) are a stack of cards. Swipe left or right, tap a card peeking out at the side, or tap the chips above the stack. **See bills**, **See money in** and **See spending** open the matching tab. Underneath, the month summary, loans and cards, and the example-budget note sit side by side. Swipe sideways to see them all. On a short screen these get shorter first, so the gauge cards keep their room.
-  - **Bills:** your income and bills, with a search box and filters: **All, Unpaid, Paid, Overdue**. The dark round button in the search box switches to the weekly schedule, one card per week, opening on this week. Swipe through the weeks, and tap **Show list** to go back. This tab scrolls.
+  - **Bills:** a summary card at the top (bills paid and money received, each with a bar in your colors), then your income and bills, with a search box and filters: **All, Unpaid, Paid, Overdue**. The dark round button in the search box switches to the weekly schedule, one card per week, opening on this week. Swipe through the weeks, and tap **Show list** to go back. This tab scrolls.
   - **Spending:** what you have spent against each everyday budget, with filters: **All, Over budget, Within budget**.
   - **Insights:** expected income, planned spending and net for the month, where the money goes, a six-month chart and a debt balance prediction.
   - **Settings:** automatic bills, loans and credit cards, and shortcuts to wallpaper and colors, budgets, sharing and backup.
@@ -43,11 +43,13 @@ Open **Menu → Wallpaper and colors…** (it is in Settings too). Everything he
 - **The look:** white cards, charcoal buttons and soft shadows. **Flat** keeps the month bar, tab bar, menu and sheets solid. **Glass** makes them see-through and blurred. With a wallpaper, Glass is a little more solid so text stays readable. With Increase Contrast turned on, Glass stays solid.
 - **Ready-made sets:** Cyan & Yellow (the default), Ocean, Forest, Sunset, Berry and Graphite.
 - **Your own colors:** three pickers.
-  - **Card color:** the Bills card and the bill headers.
-  - **Bar and chart color:** the Spending card, progress bars and charts.
-  - **Highlight color:** the Money in card and this week in the schedule.
+  - **Card color:** the Bills card, the bill headers, and the Bills heading and bar on the Bills tab.
+  - **Bar and chart color:** the Spending card, progress bars, charts, and the markers beside the Spending, Insights and loan headings.
+  - **Highlight color:** the Money in card, the Money in heading and bar on the Bills tab, and this week in the schedule.
 - **Readable by default:** the gauge cards and bill headers sit on a dark base, so their white text stays readable whatever you pick. Elsewhere the text color on each of your colors is chosen automatically (white or dark). If a color can't hold readable text, a note says so. In dark mode, very dark colors are lightened automatically so they still show.
 - **Reset** returns to Cyan & Yellow.
+
+**Where your colors show.** Every screen uses all three: a small colored marker sits beside each section heading, the Overview gauges and the Bills summary card use them, bars and charts use the bar color, and each bill's arrow button takes a soft tint of its section's color. Each budget keeps its own set, so switching budgets switches all of it.
 
 Green, orange and red keep their meaning (paid, due soon, overdue) whichever colors you pick.
 
@@ -101,4 +103,4 @@ Tap the budget name under the greeting, or use the menu. **Menu → Manage budge
 ## Notes
 
 - Data lives in the browser on that device and is not encrypted. The budgets and settings are in localStorage. Each budget's look is in localStorage too. The wallpaper pictures are in IndexedDB, so they never take room from your budgets. A different phone or browser starts with the example until you Import.
-- Updating the app: re-upload the files that changed. Each time `index.html` changes, also change the cache name at the top of `sw.js` (for example `tapbudget-v20` to `tapbudget-v21`) so phones drop the old copy. If a change doesn't appear, close and reopen the app.
+- Updating the app: re-upload the files that changed. Each time `index.html` changes, also change the cache name at the top of `sw.js` (for example `tapbudget-v21` to `tapbudget-v22`) so phones drop the old copy. If a change doesn't appear, close and reopen the app.
